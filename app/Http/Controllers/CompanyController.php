@@ -5,17 +5,30 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCompanyRequest;
 use App\Http\Requests\UpdateCompanyRequest;
 use App\Models\Company;
+use Illuminate\Support\Facades\Request;
+use Inertia\Inertia;
 
 class CompanyController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Inertia\Response
      */
     public function index()
     {
-        //
+         return Inertia::render('Companies/Index', [
+             'companies' => Company::query()
+                  ->when(Request::input('search'), function ($query, $search) {
+                      $query->where('name', 'like', "%{$search}%");
+                  })
+                 ->paginate(10)
+                 ->through(fn($company) => [
+                     'id' => $company->id,
+                     'name' => $company->name
+                 ])
+
+         ]);
     }
 
     /**
