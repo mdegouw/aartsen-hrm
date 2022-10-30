@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CompanyController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -38,3 +39,10 @@ Route::get('/test', function () {
         'name' => 'test',
     ]);
 })->name('test');
+
+
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('companies', CompanyController::class);
+});
